@@ -7,5 +7,6 @@ namespace auction.Models
 {
     public class REQUISITIONS
     {
+        public Int64 REQUISITIONS_ID { get; set; }
     }
 }
