@@ -1,0 +1,271 @@
+﻿@{
+    ViewBag.Title = "Work Orders (TR)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        new  work order list
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <span>From date</span>
+                    <input id="fromDate" class="form-control input-sm default-date-picker" placeholder="MM-DD-YYYY" autocomplete = "off" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <span>To date</span>
+                    <input id="toDate" class="form-control input-sm default-date-picker" placeholder="MM-DD-YYYY" autocomplete = "off" />
+                    <small>Not more than 31 days</small>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <span>WH Name </span>
+                    @Html.DropDownList("ORDR_FMWH", null, new { @class = "form-control input-sm select2", required = "required" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <span>Unit Name</span>
+                    @Html.DropDownList("ORDR_TOWH", null, "--select--", new { @class = "form-control input-sm select2", required = "required" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <span>Work type</span>
+                    <div class="input-group">
+                        @Html.DropDownList("ORDR_ORTP", null, "--select--", new { @class = "form-control input-sm select2", required = "required" })
+                        <span class="input-group-btn">
+                            <button type="button" id="findtnBtn" class="btn btn-primary btn-sm"><i class="fa fa-search-plus"></i> Show</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-9">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <span>OT Number</span>
+                        <div class="input-group">
+                            <input id="otnumber" class="form-control input-sm" placeholder="OT" />
+                            <span class="input-group-btn">
+                                <button id="findOtBtn" type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Show</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <span>ON Number</span>
+                        <div class="input-group">
+                            <input id="onnumber" class="form-control input-sm" placeholder="ON number" />
+                            <span class="input-group-btn">
+                                <button id="findOnBtn" type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Show</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <span>Status</span>
+                    <div class="input-group">
+                        @Html.DropDownList("ORDR_STAS", null, "--select--", new { @class = "form-control input-sm select2", required = "required" })
+                        <span class="input-group-btn">
+                            <button type="button" id="findstBtn" class="btn btn-primary btn-sm"><i class="fa fa-search-plus"></i> Show</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6" id="pv_receive"></div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+    <div class="table-responsive col-md-12">
+        <table id="workorderlist" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Status(TR)</th>
+                    <th>State</th>
+                    <th>OT No</th>
+                    <th>Date</th>
+                    <th>WH</th>
+                    <th>Unit</th>
+                    <th>Item</th>
+                    <th>Problem</th>
+                    <th>Work</th>
+                    <th>ON No</th>
+                    <th>Raiser</th>
+                    <th>Note</th>
+                    <th>rDate</th>
+                    <th>dDate</th>
+                    <th>Remarks</th>
+                    <th>User</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        new work order list
+        <p class="small pull-right">@System.DateTime.Now</p>
+    </div>
+</div>
+
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+
+            $('#findOtBtn').click(function () {
+                var fmwh = $('#ORDR_FMWH').val();
+                var towh = $('#ORDR_TOWH').val();
+                var qStr = $('#otnumber').val();
+                if (fmwh == "" || towh == "" || qStr == "") {
+                    Swal.fire("error", "enter WH/CO/OT data", "error");
+                    return;
+                }
+                var urL = '/WorkOrder/find_order_tr/?ORDR_TEXT=' + qStr + '&ORDR_FMWH=' + fmwh + '&ORDR_TOWH=' + towh + '&QUERY_NAME=OT';
+                loadTable(urL);
+            });
+
+            $('#findOnBtn').click(function () {
+                var fmwh = $('#ORDR_FMWH').val();
+                var towh = $('#ORDR_TOWH').val();
+                var qStr = $('#onnumber').val();
+                if (fmwh == "" || towh == "" || qStr == "") {
+                    Swal.fire("error", "enter WH/CO/ON data", "error");
+                    return;
+                }
+                var urL = '/WorkOrder/find_order_tr/?ORDR_NAME=' + qStr + '&ORDR_FMWH=' + fmwh + '&ORDR_TOWH=' + towh + '&QUERY_NAME=ON';
+                loadTable(urL);
+            });
+            $('#findtnBtn').click(function () {
+                var fromdt = $('#fromDate').val();
+                var todt = $('#toDate').val();
+                var fmwh = $('#ORDR_FMWH').val();
+                var towh = $('#ORDR_TOWH').val();
+                var otyp = $('#ORDR_ORTP').val();
+                if (fromDate == "" || todt == "" || fmwh == "" || otyp == "") {
+                    Swal.fire("error", "enter fDate/tDate/WH/CO/Type data", "error");
+                    return;
+                }
+                var urL = '/WorkOrder/find_order_tr/?fromDate=' + fromdt + '&toDate=' + todt + '&ORDR_FMWH=' + fmwh + '&ORDR_TOWH=' + towh + '&ORDR_ORTP=' + otyp + '&QUERY_NAME=WT';
+                loadTable(urL);
+            });
+
+            $('#findstBtn').click(function () {
+                var fromdt = $('#fromDate').val();
+                var todt = $('#toDate').val();
+                var fmwh = $('#ORDR_FMWH').val();
+                var towh = $('#ORDR_TOWH').val();
+                var odst = $('#ORDR_STAS').val();
+                if (fromDate == "" || todt == "" || fmwh == "" || odst == "") {
+                    Swal.fire("error", "enter fDate/tDate/WH/CO/Status data", "error");
+                    return;
+                }
+                var urL = '/WorkOrder/find_order_tr/?fromDate=' + fromdt + '&toDate=' + todt + '&ORDR_FMWH=' + fmwh + '&ORDR_TOWH=' + towh + '&ORDR_STAT=' + odst + '&QUERY_NAME=ST';
+                loadTable(urL);
+            });
+
+            function loadTable(urL) {
+                $.LoadingOverlay("show", {
+                    text: "Searching...",
+                    background: "rgba(0, 0, 0, 0.5)"
+                });
+                var table = $('#workorderlist').DataTable({
+                    "ajax": urL,
+                    "type": "GET",
+                    "datatype": "json",
+                    "bDestroy": true,
+                    "columns": [
+                         {
+                             "mData": "ORDR_TEXT",
+                             "render": function (mData) {
+                                 return '<div class="tn_data"><a href="/WorkOrder/Receive?ORDR_TEXT=' + mData + '" onclick="PartialView(this); return false;" class="btn btn-primary btn-xs">Receive</a><a href="/WorkOrder/Delivery?ORDR_TEXT=' + mData + '"  onclick="PartialView(this); return false;" class="btn btn-primary btn-xs">Deliver</a><a href="/WorkOrder/Return?ORDR_TEXT=' + mData + '"  onclick="PartialView(this); return false;" class="btn btn-primary btn-xs">Return</a></div>';
+                             }
+                         },
+                            {
+                                "mData": "ORDR_STAS",
+                                render: function (mData) {
+                                    if (mData == "P") {
+                                        return '<span class="label label-warning label-mini">Pending</span>'
+                                    }
+                                    else if (mData == "W") {
+                                        return '<span class="label label-info label-mini">Working</span>'
+                                    }
+                                    else if (mData == "R") {
+                                        return '<span class="label label-warning label-mini">Returned</span>'
+                                    }
+                                    else if (mData == "D") {
+                                        return '<span class="label label-success label-mini">Delivered</span>'
+                                    } else { //C
+                                        return '<span class="label label-danger label-mini">Cancelled</span>'
+                                    }
+                                }
+                            },
+                             {
+                                 "mData": "ORDR_SBMT",
+                                 render: function (mData) {
+                                     if (mData == "Y") {
+                                         return '<span class="label label-success label-mini">Submitted</span>'
+                                     }
+                                     else {
+                                         return '<span class="label label-warning label-mini">Not Submitted</span>'
+                                     }
+                                 }
+                             },
+                        { "mData": "ORDR_TEXT" },
+                        {
+                            "mData": "ORDR_DATE", "render": function (mData) {
+                                if (mData == null) return "";
+                                return moment(mData).format('MM/DD/YYYY');
+                            }
+                        },
+                        { "mData": "ORDR_FMWH" },
+                        { "mData": "ORDR_TOWH" },
+                        { "mData": "ORDR_ITEM" },
+                        { "mData": "ORDR_PRLM" },
+                        { "mData": "ORDR_ORTP" },
+                        { "mData": "ORDR_NAME" },
+                        { "mData": "ORDR_RISR" },
+                        { "mData": "ORDR_NOTE" },
+                         {
+                             "mData": "ORDR_RDAT", "render": function (mData) {
+                                 if (mData == null) return "";
+                                 return moment(mData).format('MM/DD/YYYY');
+                             }
+                         },
+                          {
+                              "mData": "ORDR_DDAT", "render": function (mData) {
+                                  if (mData == null) return "";
+                                  return moment(mData).format('MM/DD/YYYY');
+                              }
+                          },
+                        { "mData": "ORDR_CMNT" },
+                        { "mData": "UDU" },
+
+                    ],
+                    "language": { "emptyTable": "no data found" }, "width": "100%"
+                });
+                $.LoadingOverlay("hide");
+            };
+        });
+
+        function PartialView(e) {
+            var href = e.getAttribute("href");
+            $('#pv_receive').load(href);
+        };
+    </script>
+}

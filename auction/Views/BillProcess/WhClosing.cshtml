@@ -1,0 +1,277 @@
+﻿@model auction.Models.V_CLSM
+@{
+    ViewBag.Title = "Wh Closing";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        wh closing
+    </div>
+    <div class="panel-body">
+        @using (Html.BeginForm("WhClosing", "BillProcess", FormMethod.Post, new { @id = "formPost" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <span>WH Name</span>
+                        <div class="input-group">
+                            @Html.DropDownList("CLSM_FMWH", null, new { @class = "form-control input-sm select2", required = "required" })
+                            <span class="input-group-btn">
+                                <button id="addMasterItem" type="button" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <span>Allocation</span>
+                        @Html.DropDownList("CLSM_TYPE", null, new { @class = "form-control input-sm select2" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <span>Expense</span>
+                        @Html.DropDownList("CLSD_CLST", null, "--select--", new { @class = "form-control input-sm select2", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <span>Amount</span>
+                        @Html.Editor("CLSD_AMNT", new { htmlAttributes = new { @class = "form-control input-sm", required = "required", type = "number" } })
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <span>Bill Cycle</span>
+                        @Html.DropDownList("CLSM_CYCL", null, new { @class = "form-control input-sm select2", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <span>Month</span>
+                        @Html.DropDownList("CLSM_MONT", null, "-sel-", new { @class = "form-control input-sm select2", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <span>Year</span>
+                        @Html.DropDownList("CLSM_YEAR", null, new { @class = "form-control input-sm select2", required = "required" })
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <span>CO Name</span>
+                        <div class="input-group">
+                            @Html.DropDownList("CLSM_TOWH", null, new { @class = "form-control input-xs select2" })
+                            <span class="input-group-btn">
+                                <button id="addDetailItem" type="button" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <span>Options</span>
+                    <div class="form-group">
+                        <input type="checkbox" id="remvco" name="remvco">
+                        <label for="remvco">Clear CO Name after add</label><br>
+                    </div>
+                </div>
+            </div>
+            <table id="MasterD" class="table">
+                <thead>
+                    <tr>
+                        <th>W/C</th>
+                        <th>Allocation</th>
+                        <th>Expense</th>
+                        <th>Amount</th>
+                        <th>Bill Cycle</th>
+                        <th>Month</th>
+                        <th>Year</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <a href="@Url.Action("WhClosing", "BillProcess")" class="btn btn-primary btn-sm"><i class="fa fa-times"></i> Cancel</a>
+            <button id="save2db" type="submit" class="btn btn-danger btn-sm"><i class="fa fa-save"></i> Submit</button>
+        }
+    </div>
+    <div class="panel-footer">
+        wh closing
+        <p class="small pull-right">@System.DateTime.Now</p>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="table-responsive">
+        <table id="ClosingData" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th>YM</th>
+                    <th>WC</th>
+                    <th>Power</th>
+                    <th>MRG %</th>
+                    <th>MRG A</th>
+                    <th>E</th>
+                    <th>C</th>
+                    <th>Cycle</th>
+                    <th>M</th>
+                    <th>Y</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        function get_Cycle_Data() {
+            var fmwh = $('#ORDR_FMWH').val();
+            var mont = $('#ORDR_CYCL').val();
+            if (fmwh == "" || mont == "") {
+                Swal.fire("error", "enter WH data", "error");
+                return;
+            }
+            var urL = '/BillProcess/WhClosing_List/?ORDR_FMWH=' + fmwh + "&ORDR_CYCL=" + mont;
+            loadTable(urL);
+        }
+        function loadTable(urL) {
+            $.LoadingOverlay("show", {
+                text: "Searching...",
+                background: "rgba(0, 0, 0, 0.5)"
+            });
+            var table = $('#ClosingData').DataTable({
+                "ajax": urL,
+                "type": "GET",
+                "datatype": "json",
+                "bDestroy": true,
+                "autoWidth": false,
+                "columns": [
+                    { "mData": "ORBL_TEXT" },
+                    { "mData": "ORBL_AMSP" },
+                    { "mData": "ORBL_POWR" },
+                    { "mData": "ORBL_MRGP" },
+                    { "mData": "ORBL_MRGA" },
+                    { "mData": "ORBL_ORMC" },
+                    { "mData": "ORBL_ORAM" },
+                    { "mData": "ORBL_CYCL" },
+                    { "mData": "ORBL_MONT" },
+                    { "mData": "ORBL_YEAR" },
+                ],
+                "language": { "emptyTable": "no data found" }, "width": "100%"
+            });
+            $.LoadingOverlay("hide");
+        };
+
+        $("#addMasterItem").click(function (e) {
+            e.preventDefault();
+
+            var CLSM_FMWH_VAL = $.trim($("#CLSM_FMWH :selected").val()),
+                CLSM_FMWH_TEXT = $.trim($("#CLSM_FMWH :selected").text()),
+                CLSM_TYPE_VAL = $.trim($("#CLSM_TYPE :selected").val()),
+                CLSM_TYPE_TEXT = $.trim($("#CLSM_TYPE :selected").text()),
+                CLSD_CLST_VAL = $.trim($("#CLSD_CLST :selected").val()),
+                CLSD_CLST_TEXT = $.trim($("#CLSD_CLST :selected").text()),
+                CLSD_AMNT = $.trim($("#CLSD_AMNT").val()),
+                CLSM_CYCL = $.trim($("#CLSM_CYCL").val()),
+                CLSM_MONT_VAL = $.trim($("#CLSM_MONT :selected").val()),
+                CLSM_MONT_TEXT = $.trim($("#CLSM_MONT :selected").text()),
+                CLSM_YEAR = $.trim($("#CLSM_YEAR").val());
+            MasterDBody = $("#MasterD tbody");
+
+            if (CLSM_FMWH_VAL == "" || CLSM_TYPE_VAL == "" || CLSD_CLST_VAL == "" || CLSD_AMNT == "" || CLSM_CYCL == "" || CLSM_MONT_VAL == "" || CLSM_YEAR == "") {
+                Swal.fire('warning', 'Select a valid WH data', 'warning');
+                return;
+            };
+
+            var MasterDItem = '<tr><td><select><option value=' + CLSM_FMWH_VAL + '>' + CLSM_FMWH_TEXT + '</option></select></td><td><select><option value=' + CLSM_TYPE_VAL + '>' + CLSM_TYPE_TEXT + '</option></select></td><td><select><option value=' + CLSD_CLST_VAL + '>' + CLSD_CLST_TEXT + '</option></select></td><td><input value=' + CLSD_AMNT + '></td><td><select><option value=' + CLSM_CYCL + '>' + CLSM_CYCL + '</option></select></td><td><select><option value=' + CLSM_MONT_VAL + '>' + CLSM_MONT_TEXT + '</option></select></td><td><select><option value=' + CLSM_YEAR + '>' + CLSM_YEAR + '</option></select></td></tr>';
+            MasterDBody.append(MasterDItem);
+            clearItemExp();
+        });
+        function clearItemExp() {
+            $("#CLSD_AMNT").val('');
+            var CLSM_TYPE_VAL = $.trim($("#CLSM_TYPE :selected").val());
+            if (CLSM_TYPE_VAL == "AL") {
+                $('#CLSD_CLST :selected').remove();
+            }
+        }
+
+
+        $("#addDetailItem").click(function (e) {
+            e.preventDefault();
+
+            var CLSM_TOWH_VAL = $.trim($("#CLSM_TOWH :selected").val()),
+                CLSM_TOWH_TEXT = $.trim($("#CLSM_TOWH :selected").text()),
+                CLSM_TYPE_VAL = $.trim($("#CLSM_TYPE :selected").val()),
+                CLSM_TYPE_TEXT = $.trim($("#CLSM_TYPE :selected").text()),
+                CLSD_CLST_VAL = $.trim($("#CLSD_CLST :selected").val()),
+                CLSD_CLST_TEXT = $.trim($("#CLSD_CLST :selected").text()),
+                CLSD_AMNT = $.trim($("#CLSD_AMNT").val()),
+                CLSM_CYCL = $.trim($("#CLSM_CYCL").val()),
+                CLSM_MONT_VAL = $.trim($("#CLSM_MONT :selected").val()),
+                CLSM_MONT_TEXT = $.trim($("#CLSM_MONT :selected").text()),
+                CLSM_YEAR = $.trim($("#CLSM_YEAR").val());
+            MasterDBody = $("#MasterD tbody");
+
+            if (CLSM_TOWH_VAL == "" || CLSD_CLST_VAL == "" || CLSM_TYPE_VAL=="AL" || CLSD_AMNT == "" || CLSM_CYCL == "" || CLSM_MONT_VAL == "" || CLSM_YEAR == "") {
+                Swal.fire('warning', 'Select a valid CO data', 'warning');
+                return;
+            };
+
+            var MasterDItem = '<tr><td><select><option value=' + CLSM_TOWH_VAL + '>' + CLSM_TOWH_TEXT + '</option></select></td><td><select><option value=' + CLSM_TYPE_VAL + '>' + CLSM_TYPE_TEXT + '</option></select></td><td><select><option value=' + CLSD_CLST_VAL + '>' + CLSD_CLST_TEXT + '</option></select></td><td><input value=' + CLSD_AMNT + '></td><td><select><option value=' + CLSM_CYCL + '>' + CLSM_CYCL + '</option></select></td><td><select><option value=' + CLSM_MONT_VAL + '>' + CLSM_MONT_TEXT + '</option></select></td><td><select><option value=' + CLSM_YEAR + '>' + CLSM_YEAR + '</option></select></td></tr>';
+            MasterDBody.append(MasterDItem);
+            clearItemCo();
+        });
+        function clearItemCo() {
+            if ($("#remvco").prop('checked') == true) {
+                $('#CLSM_TOWH :selected').remove();
+            }
+        }
+
+
+        $(document).ready(function () {
+            $("#save2db").on("click", function () {
+                //var tbody = $("#expensList tbody");
+                //if (tbody.children().length == 0) {
+                //    Swal.fire('error', 'enter at least one exepense data', 'error');
+                //    return;
+                //}
+                var t_clsm = "T_CLSM_V";
+                var clsm_qty = 0;
+                $("#MasterD > tbody > tr").each(function () {
+                    var CLSM_FMWH = $(this).find('td:eq(0)').find('select').val(); //CLSM_FMWH/TOWH
+                    var CLSM_TYPE = $(this).find('td:eq(1)').find('select').val(); //CLSM_TYPE
+                    var CLSD_CLST = $(this).find('td:eq(2)').find('select').val(); //CLSD_CLST
+                    var CLSD_AMNT = $(this).find('td:eq(3) input').val(); //CLSD_AMNT
+                    var CLSM_CYCL = $(this).find('td:eq(4)').find('select').val(); //CLSM_CYCL
+                    var CLSM_MONT = $(this).find('td:eq(5)').find('select').val(); //CLSM_MONT
+                    var CLSM_YEAR = $(this).find('td:eq(6)').find('select').val(); //CLSM_YEAR
+
+                    if (CLSM_FMWH == "" || CLSM_TYPE=="" || CLSD_CLST == "" || CLSD_AMNT == "" || CLSM_CYCL == "" || CLSM_MONT == "" || CLSM_YEAR == "") {
+                        Swal.fire('warning', 'enter a valid closing data', 'warning');
+                        return;
+                    }
+                    $("#formPost").prepend("<input type='hidden' name='" + t_clsm + "[" + clsm_qty + "].CLSM_FMWH' value='" + CLSM_FMWH + "'>");
+                    $("#formPost").prepend("<input type='hidden' name='" + t_clsm + "[" + clsm_qty + "].CLSM_TYPE' value='" + CLSM_TYPE + "'>");
+                    $("#formPost").prepend("<input type='hidden' name='" + t_clsm + "[" + clsm_qty + "].CLSD_CLST' value='" + CLSD_CLST + "'>");
+                    $("#formPost").prepend("<input type='hidden' name='" + t_clsm + "[" + clsm_qty + "].CLSD_AMNT' value='" + CLSD_AMNT + "'>");
+                    $("#formPost").prepend("<input type='hidden' name='" + t_clsm + "[" + clsm_qty + "].CLSM_CYCL' value='" + CLSM_CYCL + "'>");
+                    $("#formPost").prepend("<input type='hidden' name='" + t_clsm + "[" + clsm_qty + "].CLSM_MONT' value='" + CLSM_MONT + "'>");
+                    $("#formPost").prepend("<input type='hidden' name='" + t_clsm + "[" + clsm_qty + "].CLSM_YEAR' value='" + CLSM_YEAR + "'>");
+                    clsm_qty += 1;
+                });
+            });
+        });
+
+
+    </script>
+
+
+}

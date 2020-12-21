@@ -1,0 +1,257 @@
+﻿@model auction.Models.v_wkod_master
+
+@{
+    ViewBag.Title = "create work order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        create work order
+        <div class="pull-right"><a class="btn btn-danger btn-xs" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">instructions</a></div>
+    </div>
+    <div class="panel-body">
+        @using (Html.BeginForm("NewWorkOrder", "WorkOrder", FormMethod.Post, new { @id = "formPost" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <span>WH Name</span>
+                        @Html.DropDownListFor(m => m.ORDR_FMWH, null, new { @class = "form-control input-sm select2", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <span>Unit Name</span>
+                        @Html.DropDownListFor(m => m.ORDR_TOWH, null, "--select--", new { @class = "form-control input-sm select2", required = "required", onchange = "get_ItemList();" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <span>Order date</span>
+                        @Html.EditorFor(model => model.ORDR_DATE, new { htmlAttributes = new { @class = "default-date-picker form-control input-sm", required = "required", placeholder = "MM-DD-YYYY", autocomplete = "off" } })
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <span>Order raiser</span>
+                        @Html.EditorFor(model => model.ORDR_RISR, new { htmlAttributes = new { @class = "form-control input-sm", required = "required", placeholder = "Raiser name and Cell number" } })
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-info">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <span>Work type</span>
+                                @Html.DropDownList("ORDR_ORTP", null, "--select--", new { @class = "form-control input-sm select2" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <span>Work Name</span>
+                                @Html.DropDownList("ORDR_ITEM", Enumerable.Empty<SelectListItem>(), "--select--", new { @class = "form-control input-sm select2", onchange = "get_ItemUnit();" })
+                                <input hidden id="ORDR_AMSU" />
+                                <input hidden id="ORDR_AMSU_NAME" />
+                                <input hidden id="ORDR_RATE" value="0" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <span>Problem detail</span>
+                                <input id="problemdetail" class="form-control input-sm" value="problem" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <span>Remarks</span>
+                                <div class="input-group">
+                                    <input id="notes" class="form-control input-sm" value="-" />
+                                    <span class="input-group-btn">
+                                        <button id="addItem" type="button" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row table-responsive">
+                        <table id="workoders" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Name</th>
+                                    <th>Unit</th>
+                                    <th>Rate</th>
+                                    <th>Problem Details</th>
+                                    <th>Remarks</th>
+                                    <th>#</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+                <a href="@Url.Action("NewWorkOrder","WorkOrder")" class="btn btn-primary btn-sm"><i class="fa fa-times"></i> Cancel</a>
+                <button id="save2db" type="submit" class="btn btn-danger btn-sm"><i class="fa fa-save"></i> Save</button>
+        }
+    </div>
+    <div class="panel-footer">
+        create work order
+        <p class="small pull-right">@System.DateTime.Now</p>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="col-md-12">
+            <div class="collapse multi-collapse" id="multiCollapseExample1">
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h3><span class="fa fa-plus"></span> Add</h3>
+                            <p>To prepare work order, hit this button item add to list</p>
+                            <p>Each item will create a single Work Order</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3><span class="fa fa-copy"></span> (Duplicate)</h3>
+                            <p>To create multiple work order using same item, hit this button make it duplicate</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3><span class="fa fa-trash-o"></span> (Remove)</h3>
+                            <p>If you want to remove work items, hit this button delete from list</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3><span class="fa fa-save"></span> Save</h3>
+                            <p>After prepare the work order, hit this button save the list items</p>
+                            <p>order number (OT) generate for each list items</p>
+                            <p>order batch number (ON) generate for work order</p>
+                            <p>Send work order to <strong>Tool Room</strong>, Go Work Order > Work Order List > Select Work Order > hit the <strong>Submit</strong> button</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+        //Add Multiple Order.
+        $("#addItem").click(function (e) {
+
+            e.preventDefault();
+            debugger;
+
+            var typecode = $.trim($("#ORDR_ORTP :selected").val()),
+                typename = $.trim($("#ORDR_ORTP :selected").text()),
+                itemcode = $.trim($("#ORDR_ITEM :selected").val()),
+                itemName = $.trim($("#ORDR_ITEM :selected").text()),
+                itemuntId = $.trim($("#ORDR_AMSU").val()),
+                itemuntName = $.trim($("#ORDR_AMSU_NAME").val()),
+                itemrate = $.trim($("#ORDR_RATE").val()),
+                problemdetail = $("#problemdetail").val(),
+                note = $("#notes").val(),
+                workodersBody = $("#workoders tbody");
+
+            if (typecode == "" || itemcode == "" || itemuntId == "" || problemdetail == "") {
+                Swal.fire('warning', 'Select a valid item', 'warning');
+                return;
+            };
+
+            var workodersitem = '<tr><td><select><option value="' + typecode + '">' + typename + '</option></select></td><td><select><option value="' + itemcode + '">' + itemName + '</option></select></td><td><select><option value="' + itemuntId + '">' + itemuntName + '</option></select></td><td><input value="' + itemrate + '" readonly/></td><td><input value="' + problemdetail + '"/></td><td><input value="' + note + '"/></td><td><a data-itemId="0" href="#" class="cloneItem btn btn-success btn-xs"><i class="fa fa-copy"></i></a><a data-itemId="0" href="#" class="deleteItem btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></a></td></tr>';
+            workodersBody.append(workodersitem);
+            clearItem();
+        });
+        //After Add A New Order In The List, Clear Clean The Form For Add More Order.
+        function clearItem() {
+            $("#problemdetail").val('');
+            $("#note").val('-');
+        }
+
+
+        $('#workoders tbody').on('click', 'tr .deleteItem', function (e) {
+            e.preventDefault();
+            $(this).closest('tr').fadeOut("slow", function () {
+                $(this).remove();
+            })
+        });
+
+        $('#workoders tbody').on('click', 'tr .cloneItem', function (e) {
+            e.preventDefault();
+            var selectedTr = $(this).closest('tr');
+            var clone = selectedTr.clone();
+            selectedTr.after(clone);
+        });
+
+        $(document).ready(function () {
+            $("#save2db").on("click", function () {
+                var tbody = $("#workoders tbody");
+                if (tbody.children().length == 0) {
+                    Swal.fire('error', 'enter at least one item data', 'error');
+                    return;
+                }
+                var listName = "v_wkod_item";
+                var qtd = 0;
+                $("#workoders > tbody > tr").each(function () {
+                    debugger;
+                    var ordrtype = $(this).find('td:eq(0)').find('select').val(); //ORDR_TYPE
+                    var ordritem = $(this).find('td:eq(1)').find('select').val(); //ORDR_ITEM
+                    var ordrunit = $(this).find('td:eq(2)').find('select').val(); //ORDR_UNIT
+                    var ordrrate = $(this).find('td:eq(3) input').val(); //ORDR_RATE
+                    var ordrprlm = $(this).find('td:eq(4) input').val(); //ORDR_PRLM
+                    var ordrnote = $(this).find('td:eq(5) input').val(); //ORDR_NOTE
+
+                    if (ordrtype == "" || ordritem == "" || ordrunit == "" || ordrprlm == "") {
+                        Swal.fire('warning', 'enter a valid item data', 'warning');
+                        return;
+                    }
+                    $("#formPost").prepend("<input type='hidden' name='" + listName + "[" + qtd + "].ORDR_ORTP' value='" + ordrtype + "'>");
+                    $("#formPost").prepend("<input type='hidden' name='" + listName + "[" + qtd + "].ORDR_ITEM' value='" + ordritem + "'>");
+                    $("#formPost").prepend("<input type='hidden' name='" + listName + "[" + qtd + "].ORDR_UNIT' value='" + ordrunit + "'>");
+                    $("#formPost").prepend("<input type='hidden' name='" + listName + "[" + qtd + "].ORDR_RATE' value='" + ordrrate + "'>");
+                    $("#formPost").prepend("<input type='hidden' name='" + listName + "[" + qtd + "].ORDR_PRLM' value='" + ordrprlm + "'>");
+                    $("#formPost").prepend("<input type='hidden' name='" + listName + "[" + qtd + "].ORDR_NOTE' value='" + ordrnote + "'>");
+                    qtd += 1;
+                });
+            });
+        });
+
+        function get_ItemList() {
+            var url = 'DropDownFor_MoldList';
+            var MOLD_AMSP = $('#ORDR_TOWH').val();
+            var ORDR_ITEM = $('#ORDR_ITEM');
+            ORDR_ITEM.empty();
+            ORDR_ITEM.append($("<option></option>").attr("value", '').text('--Select--'));
+            $.LoadingOverlay("show", {
+                text: "Searching...",
+                background: "rgba(0, 0, 0, 0.5)"
+            });
+            $.getJSON(url, { MOLD_AMSP: MOLD_AMSP }, function (response) {
+                $.each(response, function (index, item) {
+                    ORDR_ITEM.append($("<option></option>").attr("value", item.Value).text(item.Text));
+                });
+            });
+            $.LoadingOverlay("hide");
+        };
+
+        function get_ItemUnit() {
+            var url = 'Hidden_Mold_Unit';
+            $('#ORDR_AMSU').val('');
+            $('#ORDR_AMSU_NAME').val('');
+            var ORDR_ITEM = $("#ORDR_ITEM").val();
+            if (ORDR_ITEM == "") {
+                return;
+            }
+            $.getJSON(url, { MOLD_TEXT: ORDR_ITEM }, function (response) {
+                $('#ORDR_AMSU').val(response.AMSU_OID);
+                $('#ORDR_AMSU_NAME').val(response.AMSU_NAME);
+            });
+        };
+    </script>
+
+}

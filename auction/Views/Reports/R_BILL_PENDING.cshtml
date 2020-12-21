@@ -1,0 +1,72 @@
+﻿@model IEnumerable<auction.Models.R_BILL_PENDING_C>
+
+<table class="table">
+    <tr>
+        <th>
+            OT No
+        </th>
+        <th>
+            WH Name
+        </th>
+        <th>
+            CO Name
+        </th>
+        <th>
+            Work Type
+        </th>
+        <th>
+            Work Name
+        </th>
+        <th>
+            Raiser
+        </th>
+        <th>
+           Date
+        </th>
+        <th>
+            dDate
+        </th>
+        <th>
+            Problem
+        </th>
+        <th>
+            Remarks
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ORDR_TEXT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.WH_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CO_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ORTP_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MOLD_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ORDR_RISR)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ORDR_DATE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ORDR_DDAT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ORDR_PRLM)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ORDR_CMNT)
+        </td>
+    </tr>
+}
+
+</table>

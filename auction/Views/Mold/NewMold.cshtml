@@ -1,0 +1,85 @@
+﻿@model auction.Models.T_MOLD
+
+@{
+    ViewBag.Title = "New Mold";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-2">
+                @Html.Label("MOLD_NAME", "Mold Name", htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.MOLD_NAME, new { htmlAttributes = new { @class = "form-control", @style = "width:100%; height:25px" } })
+                @Html.ValidationMessageFor(model => model.MOLD_NAME, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.Label("MOLD_AMSU", "Unit", htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.MOLD_AMSU, new { htmlAttributes = new { @class = "form-control", @style = "width:100%; height:25px" } })
+                @Html.ValidationMessageFor(model => model.MOLD_AMSU, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-2">
+                @Html.Label("MOLD_AMSP", "Wh name", htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.MOLD_AMSP, new { htmlAttributes = new { @class = "form-control", @style = "width:100%; height:25px" } })
+                @Html.ValidationMessageFor(model => model.MOLD_AMSP, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-2">
+                @Html.Label("MOLD_TAAG", "Tag", htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.MOLD_TAAG, new { htmlAttributes = new { @class = "form-control", @style = "width:100%; height:25px" } })
+                @Html.ValidationMessageFor(model => model.MOLD_TAAG, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.Label("MOLD_DESC","Description", htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.MOLD_DESC, new { htmlAttributes = new { @class = "form-control", @style = "width:100%; height:25px" } })
+                @Html.ValidationMessageFor(model => model.MOLD_DESC, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-2">
+                @Html.Label("MOLD_CVTY","Cabity" ,htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.MOLD_CVTY, new { htmlAttributes = new { @class = "form-control", @style = "width:100%; height:25px" } })
+                @Html.ValidationMessageFor(model => model.MOLD_CVTY, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                @Html.Label("MOLD_WTRL", "Water Line",htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.MOLD_WTRL, new { htmlAttributes = new { @class = "form-control", @style = "width:100%; height:25px" } })
+                @Html.ValidationMessageFor(model => model.MOLD_WTRL, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.Label("MOLD_HYDL","Hydrolic Line", htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.MOLD_HYDL, new { htmlAttributes = new { @class = "form-control", @style = "width:100%; height:25px" } })
+                @Html.ValidationMessageFor(model => model.MOLD_HYDL, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.Label("MOLD_SIZE","Size", htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.MOLD_SIZE, new { htmlAttributes = new { @class = "form-control", @style = "width:100%; height:25px" } })
+                @Html.ValidationMessageFor(model => model.MOLD_SIZE, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.Label("MOLD_MFGD","MFG Date", htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.MOLD_MFGD, new { htmlAttributes = new { @class = "form-control", @style = "width:100%; height:25px" } })
+                @Html.ValidationMessageFor(model => model.MOLD_MFGD, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.Label("MOLD_STUS","Status", htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.MOLD_STUS, new { htmlAttributes = new { @class = "form-control", @style = "width:100%; height:25px" } })
+                @Html.ValidationMessageFor(model => model.MOLD_STUS, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-2">
+                @Html.Label("MOLD_IMAG","Image", htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.MOLD_IMAG, new { htmlAttributes = new { @class = "form-control", @style = "width:100%; height:25px" } })
+                @Html.ValidationMessageFor(model => model.MOLD_IMAG, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <br />
+        <div class="col-xs-offset-10 col-xs-2">
+            <input type="submit" value="Create" class="btn btn-primary btn-xs" />
+        </div>
+    </div>
+}

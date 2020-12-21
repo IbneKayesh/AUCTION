@@ -1,0 +1,55 @@
+﻿@model IEnumerable<auction.Models.R_Unit_EC_Summary_C>
+
+@{
+    Layout = null;
+    <style>
+        table tr td {
+            font-size: 11px;
+        }
+    </style>
+}
+<table class="table table-border">
+    <tr>
+        <th>
+            WH Name
+        </th>
+        <th>
+            CO Name
+        </th>
+        <th>
+            Expenses
+        </th>
+        <th>
+            Consumption
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.WH_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CO_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EXP_AMNT)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CON_AMNT)
+            </td>
+        </tr>
+    }
+
+</table>
+
+<br />
+<br />
+<small>@DateTime.Now Printed by @Session["UserId"].ToString()</small>
+<script type="text/javascript">
+    //document.addEventListener("DOMContentLoaded", function () {
+    //    window.print();
+    //    setTimeout('window.close()', 100);
+    //});
+</script>

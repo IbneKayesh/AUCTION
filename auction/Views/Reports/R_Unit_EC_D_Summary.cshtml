@@ -1,0 +1,72 @@
+﻿@model IEnumerable<auction.Models.R_Unit_EC_D_Summary_C>
+@{
+    Layout = null;
+    <style>
+        table tr td {
+            font-size: 11px;
+        }
+    </style>
+}
+<table class="table">
+    <tr>
+        <th>
+            OT No
+        </th>
+        <th>
+            Date
+        </th>
+        <th>
+            WH Name
+        </th>
+        <th>
+            CO Name
+        </th>
+        <th>
+            Work Type
+        </th>
+        <th>
+            Work Name
+        </th>
+        <th>
+            Expenses
+        </th>
+        <th>
+            Consumption
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORDR_TEXT)
+                <input id="@item.ORDR_TEXT" type="button" value="More" data-url="/Reports/R_Unit_EC_ORAM_ORMC/@item.ORDR_TEXT" onclick="PartialViewD(this); return false;" class="btn btn-primary btn-xs btn-color" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORDR_DATE)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WH_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CO_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORTP_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MOLD_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EXP_AMNT)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CON_AMNT)
+            </td>
+        </tr>
+    }
+
+</table>
+<br />
+<br />
+<small>@DateTime.Now Printed by @Session["UserId"].ToString()</small>

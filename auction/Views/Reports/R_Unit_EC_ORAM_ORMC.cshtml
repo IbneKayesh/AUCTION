@@ -1,0 +1,59 @@
+﻿@model IEnumerable<auction.Models.R_Unit_EC_ORAM_ORMC_C>
+
+@{
+    Layout = null;
+}
+<table class="table">
+    <tr>
+        <th>
+            OT
+        </th>
+        <th>
+            E/C
+        </th>
+        <th>
+            Q/H
+        </th>
+        <th>
+            Rate
+        </th>
+        <th>Amount</th>
+        <th>
+            Note
+        </th>
+        <th>
+            Ref
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORDR_TEXT)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MCLT_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORMC_HOUR)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORMC_COST)
+            </td>
+            <td>
+                @{
+                    string Val = (item.ORMC_HOUR * item.ORMC_COST).ToString();
+                }
+                @Val
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORMC_DESC)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORDR_REFR)
+            </td>
+        </tr>
+                    }
+
+</table>

@@ -1,0 +1,44 @@
+﻿@model auction.Models.v_ordr_received
+
+@{
+    Layout = null;
+}
+
+<div class="col-md-12">
+    <h4>Order Receive</h4>
+    <hr />
+    <div class="form-group">
+        <span>OT No: </span>
+        @Html.DisplayFor(model => model.ORDR_TEXT)
+        @Html.HiddenFor(model => model.ORDR_TEXT)
+    </div>
+    <div class="form-group">
+        <span>Remarks: </span>
+        @Html.EditorFor(model => model.ORDR_CMNT, new { htmlAttributes = new { @class = "form-control", placeholder = "enter remarks", required = "required" } })
+        @Html.ValidationMessageFor(model => model.ORDR_CMNT, "", new { @class = "text-danger" })
+    </div>
+    <button onclick="doUpdate()" type="button" class="btn btn-danger btn-sm"><i class="fa fa-save"></i> Submit</button>
+</div>
+<script>
+    function doUpdate() {
+        var ORDR_TEXT = $('#ORDR_TEXT').val();
+        var ORDR_CMNT = $('#ORDR_CMNT').val();
+        if (ORDR_TEXT == "" || ORDR_CMNT == "") {
+            Swal.fire("error", "enter data", "error");
+            return;
+        }
+        $.ajax({
+            url: "/WorkOrder/OrderReceive/?order=" + ORDR_TEXT + "&comnt=" + ORDR_CMNT,
+            type: "GET",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                Swal.fire("success", response.data, "success");
+                $("#pv_receive").empty();
+            },
+            error: function (errormessage) {
+                Swal.fire("error", errormessage.responseText, "error");
+            }
+        });
+    }
+</script>

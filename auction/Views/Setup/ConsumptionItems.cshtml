@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Title = "Consumption Items";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        consumption item
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <span>WH Name </span>
+                    @Html.DropDownList("ORDR_FMWH", null, "--select--", new { @class = "form-control input-sm select2", required = "required" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <span>Item Code</span>
+                    <input id="amim_text" class="form-control input-sm" placeholder="0000001" autocomplete="off" />
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    <input type="button" id="btnamimv" value="Add Item" onclick="addItem()" class="btn btn-primary btn-xs" />
+                    <input type="button" id="btnamims" value="View Item" onclick="viewItem()" class="btn btn-info btn-xs" />
+                    <input type="button" id="btnamimt" value="Auto Add Missing Items" onclick="AutoAddItem()" class="btn btn-danger btn-xs" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <table id="itemlist" class="table table-border">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel-footer">
+        consumption item
+        <p class="small pull-right">@System.DateTime.Now</p>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+        function addItem() {
+            var amim_text = $('#amim_text').val();
+            var ORDR_FMWH = $('#ORDR_FMWH').val();
+            if (amim_text == "" || ORDR_FMWH=="") {
+                Swal.fire("error", "enter item code/WH", "error");
+                return;
+            }
+            var url = "/Setup/AddConItems";
+            $.LoadingOverlay("show", {
+                text: "Searching...",
+                background: "rgba(0, 0, 0, 0.5)"
+            });
+            $.getJSON(url, { amim_text: amim_text, ORDR_FMWH: ORDR_FMWH }, function (response) {
+                Swal.fire("Information", response.messages, "info");
+            });
+            $.LoadingOverlay("hide");
+            viewItem();
+        };
+
+
+        function viewItem() {
+            var amim_text = $('#amim_text').val();
+            if (amim_text == "") {
+                Swal.fire("error", "enter item code", "error");
+                return;
+            }
+            var url = "/Setup/ConItems/?amim_text=" + amim_text;
+            loadTable(url);
+        };
+
+
+        function AutoAddItem() {
+            var ORDR_FMWH = $('#ORDR_FMWH').val();
+            if ( ORDR_FMWH == "") {
+                Swal.fire("error", "enter WH", "error");
+                return;
+            }
+            var url = "/Setup/Add_Con_Items_Auto";
+            $.LoadingOverlay("show", {
+                text: "Searching...",
+                background: "rgba(0, 0, 0, 0.5)"
+            });
+            $.getJSON(url, { ORDR_FMWH: ORDR_FMWH }, function (response) {
+                Swal.fire("Information", response.messages, "info");
+            });
+            $.LoadingOverlay("hide");
+        };
+
+
+
+
+        function loadTable(urL) {
+            $.LoadingOverlay("show", {
+                text: "Searching...",
+                background: "rgba(0, 0, 0, 0.5)"
+            });
+            var table = $('#itemlist').DataTable({
+                "ajax": urL,
+                "type": "GET",
+                "datatype": "json",
+                "bDestroy": true,
+                "autoWidth": false,
+                "columns": [
+                    { "mData": "AMIM_TEXT" },
+                    { "mData": "AMIM_NAME" },
+                      {
+                          "mData": "AMIM_ACTV",
+                          render: function (mData) {
+                              if (mData == "1") {
+                                  return '<span class="label label-success label-mini">Active</span>'
+                              }
+                              else {
+                                  return '<span class="label label-warning label-mini">Inactive</span>'
+                              }
+                          }
+                      },
+                ],
+                "language": { "emptyTable": "no data found" }, "width": "100%"
+            });
+            $.LoadingOverlay("hide");
+        };
+    </script>
+}

@@ -1,0 +1,23 @@
+﻿@model auction.Models.v_ordr_received
+
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("Return", "WorkOrder", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <h4 style="color:red">Order Return</h4>
+    <hr />
+    <div class="form-group">
+        <span>OT No: </span>
+        @Html.DisplayFor(model => model.ORDR_TEXT)
+        @Html.HiddenFor(model => model.ORDR_TEXT)
+    </div>
+    <div class="form-group">
+        <span>Remarks: </span>
+        @Html.EditorFor(model => model.ORDR_CMNT, new { htmlAttributes = new { @class = "form-control", placeholder = "enter remarks", required = "required" } })
+        @Html.ValidationMessageFor(model => model.ORDR_CMNT, "", new { @class = "text-danger" })
+    </div>
+    <button id="save2db" type="submit" class="btn btn-danger btn-sm"><i class="fa fa-save"></i> Submit</button>
+}

@@ -1,0 +1,90 @@
+﻿@model auction.Models.T_MOLD
+
+@{
+    ViewBag.Title = "Create New Mold with Delivery";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("CreateLikeMold","WorkOrder"))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal col-md-8">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.MOLD_AMSU)
+        @Html.HiddenFor(model => model.MOLD_AMSP)
+        @Html.HiddenFor(model => model.CDU)
+        @Html.HiddenFor(model => model.UDU)
+
+        <div class="form-group">
+            <p class="col-md-2">Mold Name</p>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MOLD_NAME, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MOLD_NAME, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <p class="col-md-2">Tag/Code</p>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MOLD_TAAG, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MOLD_TAAG, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="col-md-2">Description</p>            
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MOLD_DESC, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MOLD_DESC, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="col-md-2">Cavity</p>                        
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MOLD_CVTY, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MOLD_CVTY, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="col-md-2">Water Line</p>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MOLD_WTRL, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MOLD_WTRL, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="col-md-2">Hydrolic Line</p>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MOLD_HYDL, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MOLD_HYDL, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="col-md-2">Size</p>            
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MOLD_SIZE, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MOLD_SIZE, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="col-md-2">Status</p>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MOLD_STUS, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MOLD_STUS, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save new Mold and Delivery" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}

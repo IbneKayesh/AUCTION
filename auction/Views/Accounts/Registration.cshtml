@@ -1,0 +1,227 @@
+﻿@model  auction.Models.AGENTS_NEW
+
+@{
+    ViewBag.Title = "Registration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Agent Registration</h2>
+
+@using (Html.BeginForm("Registration", "Accounts", FormMethod.Post, new { @id = "formPost" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <p class="small">@System.DateTime.Now</p>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.AGENT_LOGIN_ID, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.AGENT_LOGIN_ID, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AGENT_LOGIN_ID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.AGENT_PASSWORD, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.AGENT_PASSWORD, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AGENT_PASSWORD, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.AGENT_PROPRIETOR_NAME, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.AGENT_PROPRIETOR_NAME, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AGENT_PROPRIETOR_NAME, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+            @Html.LabelFor(model => model.AGENT_PICTURES, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.AGENT_PICTURES, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AGENT_PICTURES, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AGENT_NAME, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.AGENT_NAME, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AGENT_NAME, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AGENT_CONTACT, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.AGENT_CONTACT, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AGENT_CONTACT, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AGENT_WEBSITE, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.AGENT_WEBSITE, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AGENT_WEBSITE, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.REGISTRATION_NUMBER, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.REGISTRATION_NUMBER, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.REGISTRATION_NUMBER, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AGENT_MEMBER, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.AGENT_MEMBER, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AGENT_MEMBER, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CONTACT_PERSON, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.CONTACT_PERSON, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CONTACT_PERSON, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CONTACT_PERSON_CONTACT, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.CONTACT_PERSON_CONTACT, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CONTACT_PERSON_CONTACT, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EMAIL_ADDRESS, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.EMAIL_ADDRESS, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EMAIL_ADDRESS, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AGENT_ADDRESS, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.AGENT_ADDRESS, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AGENT_ADDRESS, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AGENT_CAPACITY, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.AGENT_CAPACITY, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AGENT_CAPACITY, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EMAIL_NOTIFICATIONS, htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.EMAIL_NOTIFICATIONS, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EMAIL_NOTIFICATIONS, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("Company", htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="input-group">
+                        @Html.DropDownList("COMPANY", null, "--select--", new { @class = "form-control input-sm select2" })
+                        <span class="input-group-btn">
+                            <button id="addItem" type="button" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Add</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="row table-responsive">
+                    <table id="scompany" class="table">
+                        <thead>
+                            <tr>
+                                <th>Company Name</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-4 col-md-8">
+                <input id="save2db" type="submit" value="Sign up" class="btn btn-primary" />
+                <a href="@Url.Action("Login", "Accounts")" class="btn btn-default">Login</a>
+                <a href="@Url.Action("Registration","Accounts")" class="btn btn-primary btn-sm"><i class="fa fa-times"></i> Cancel</a>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section scripts{
+    <script>
+
+        //Add Multiple Order.
+        $("#addItem").click(function (e) {
+            e.preventDefault();
+            var companysl = $.trim($("#COMPANY :selected").val()),
+                companyname = $.trim($("#COMPANY :selected").text()),
+                scompanyBody = $("#scompany tbody");
+
+            if (companysl == "" || companyname == "") {
+                Swal.fire('warning', 'Select a valid company', 'warning');
+                return;
+            };
+
+            var scompanyItem = '<tr><td><select><option value="' + companysl + '">' + companyname + '</option></select></td><td><a data-itemId="0" href="#" class="deleteItem btn btn-danger btn-xs"><i class="fa fa-trash-o"></i></a></td></tr>';
+            scompanyBody.append(scompanyItem);
+            clearItem();
+        });
+        //After Add A New Order In The List, Clear Clean The Form For Add More Order.
+        function clearItem() {
+            $("#COMPANY :selected").remove();
+        }
+
+
+        $('#scompany tbody').on('click', 'tr .deleteItem', function (e) {
+            e.preventDefault();
+            $(this).closest('tr').fadeOut("slow", function () {
+                $(this).remove();
+            })
+        });
+
+        $(document).ready(function () {
+            $("#save2db").on("click", function () {
+                debugger;
+                var tbody = $("#scompany tbody");
+                if (tbody.children().length == 0) {
+                    Swal.fire('error', 'enter at least one company', 'error');
+                    return;
+                }
+                var listName = "AGENT_COMPANY_T";
+                var qtd = 0;
+                $("#scompany > tbody > tr").each(function () {
+                    var companysl = $(this).find('td:eq(0)').find('select').val(); //Company Code
+                    var companyname = $(this).find('td:eq(0)').find('select').text(); //Company Code
+
+                    if (companysl == "") {
+                        Swal.fire('warning', 'enter a valid company', 'warning');
+                        return;
+                    }
+                    $("#formPost").prepend("<input type='hidden' name='" + listName + "[" + qtd + "].COMPANY_ID' value='" + companysl + "'>");
+                    $("#formPost").prepend("<input type='hidden' name='" + listName + "[" + qtd + "].COMPANY_NAME' value='" + companyname + "'>");
+                    qtd += 1;
+                });
+            });
+        });
+    </script>
+
+}

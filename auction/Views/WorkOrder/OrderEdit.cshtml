@@ -1,0 +1,78 @@
+﻿@model auction.Models.v_ordr_edit
+@{
+    ViewBag.Title = "edit work order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        edit work order
+    </div>
+    <div class="panel-body">
+        @using (Html.BeginForm("OrderEdit", "WorkOrder", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <strong>OT No: </strong>
+                        @Html.DisplayFor(model => model.ORDR_TEXT)
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <strong>Item: </strong>
+                        @Html.DisplayFor(model => model.ORDR_ITEM)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @Html.HiddenFor(model => model.ORDR_TEXT)
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <span>Unit Name</span>
+                        @Html.DropDownListFor(m => m.ORDR_TOWH, null, "--select--", new { @class = "form-control input-sm select2", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <span>Work type</span>
+                        @Html.DropDownList("ORDR_ORTP", null, "--select--", new { @class = "form-control input-sm select2" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <span>Order riser</span>
+                        @Html.EditorFor(model => model.ORDR_RISR, new { htmlAttributes = new { @class = "form-control input-sm", required = "required", placeholder = "Raiser name and Cell number" } })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <span>Remarks</span>
+                        @Html.EditorFor(model => model.ORDR_CMNT, new { htmlAttributes = new { @class = "form-control input-sm", required = "required", placeholder = "Remarks" } })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="form-group">
+                        <span>Problem detail</span>
+                        @Html.EditorFor(model => model.ORDR_PRLM, new { htmlAttributes = new { @class = "form-control input-sm", required = "required", placeholder = "problem" } })
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <span>Work Ref</span>
+                        @Html.EditorFor(model => model.ORDR_NOTE, new { htmlAttributes = new { @class = "form-control input-sm", required = "required", placeholder = "Note" } })
+                    </div>
+                </div>
+
+            </div>
+            <a href="@Url.Action("Index","WorkOrder")" class="btn btn-primary btn-sm"><i class="fa fa-times"></i> Cancel</a>
+            <button id="save2db" type="submit" class="btn btn-danger btn-sm"><i class="fa fa-save"></i> Save</button>
+        }
+    </div>
+    <div class="panel-footer">
+        edit work order
+        <p class="small pull-right">@System.DateTime.Now</p>
+    </div>
+</div>

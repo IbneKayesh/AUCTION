@@ -1,0 +1,90 @@
+﻿@model auction.Models.R_EXPENSES
+@{
+    ViewBag.Title = "Time Consume Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        time consume report
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <span>From date</span>
+                    @Html.Editor("FROM_DATE", new { htmlAttributes = new { @class = "form-control input-sm default-date-picker", placeholder = "MM-DD-YYYY", required = "required", autocomplete = "off" } })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <span>To date</span>
+                    @Html.Editor("TO_DATE", new { htmlAttributes = new { @class = "form-control input-sm default-date-picker", placeholder = "MM-DD-YYYY", required = "required", autocomplete = "off" } })
+                    <small>Not more than 31 days</small>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <span>WH Name </span>
+                    @Html.DropDownList("ORDR_FMWH", null, "--select--", new { @class = "form-control input-sm select2", required = "required" })
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <span>Unit Name</span>
+                    @Html.DropDownList("ORDR_TOWH", null, "--all--", new { @class = "form-control input-sm select2", required = "required" })
+                </div>
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input id="btnDuraS" type="button" value="Time Consume By Order" data-url="/Reports/R_TimeConsumeD" onclick="PartialView(this); return false;" class="btn btn-info btn-xs" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        time consume report
+        <p class="small pull-right">@System.DateTime.Now</p>
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        report viewer
+    </div>
+    <div class="panel-body">
+        <div id="rpt_view"></div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        function PartialView(e) {
+            var url = $(e).attr('data-url');
+            var FROM_DATE = $('#FROM_DATE').val();
+            var TO_DATE = $('#TO_DATE').val();
+            var ORDR_FMWH = $('#ORDR_FMWH').val();
+            var ORDR_TOWH = $('#ORDR_TOWH').val();
+            if (FROM_DATE == "" || TO_DATE == "" || ORDR_FMWH == "")
+            {
+                Swal.fire("error", "enter all the data", "error");
+                return;
+            }
+
+                var ulr = url + "/?FROM_DATE=" + FROM_DATE + "&TO_DATE=" + TO_DATE + "&ORDR_FMWH=" + ORDR_FMWH + "&ORDR_TOWH=" + ORDR_TOWH;
+                $.LoadingOverlay("show", {
+                    text: "Searching...",
+                    background: "rgba(0, 0, 0, 0.5)"
+                });
+                $('#rpt_view').load(ulr);
+                $.LoadingOverlay("hide");
+
+
+
+        };
+
+    </script>
+}

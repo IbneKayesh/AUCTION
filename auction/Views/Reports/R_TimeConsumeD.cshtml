@@ -1,0 +1,86 @@
+﻿@model IEnumerable<auction.Models.R_TimeConsumeDC>
+@{
+    Layout = null;
+    <style>
+        table tr td {
+            font-size: 11px;
+        }
+    </style>
+}
+<table class="table">
+    <tr>
+        <th>
+            OT No
+        </th>
+        <th>
+            WH Name
+        </th>
+        <th>
+            CO Name
+        </th>
+        <th>
+            Work Type
+        </th>
+        <th>
+            Work Name
+        </th>
+        <th>
+            O DT
+        </th>
+        <th>
+            R DT
+        </th>
+        <th>
+            OR C
+        </th>
+        <th>
+            D DT
+        </th>
+        <th>
+            RD C
+        </th>
+        <th>
+            Status (TR)
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORDR_TEXT)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WH_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CO_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORTP_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MOLD_NAME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CDT)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORDR_RDAT)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OR_C)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORDR_DDAT)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RD_C)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ORDR_STAS)
+            </td>
+        </tr>
+    }
+
+</table>

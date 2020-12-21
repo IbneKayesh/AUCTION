@@ -1,0 +1,152 @@
+﻿@model auction.Models.T_MCLT
+
+@{
+    ViewBag.Title = "New Man Power";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal col-md-6">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            <p class="col-md-2">WH Name</p>
+            <div class="col-md-10">
+                @Html.DropDownList("MCLT_FMWH", null, "--select--", new { @class = "form-control input-sm select2", required = "required" })
+                @Html.ValidationMessageFor(model => model.MCLT_FMWH, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="col-md-2">Staff Id</p>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MCLT_NAME, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                @Html.ValidationMessageFor(model => model.MCLT_NAME, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="col-md-2">Name</p>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MCLT_DESC, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                @Html.ValidationMessageFor(model => model.MCLT_DESC, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="col-md-2">Contact</p>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MCLT_MODL, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MCLT_MODL, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <p class="col-md-2">Salary</p>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MCLT_PRCE, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MCLT_PRCE, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p class="col-md-2">Hourly rate</p>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MCLT_COST, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                @Html.ValidationMessageFor(model => model.MCLT_COST, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <input id="findManpaower" type="button" value="Find" class="btn btn-info" />
+            </div>
+        </div>
+    </div>
+}
+
+<div class="col-md-12">
+    <table id="manpowerList" class="table table-border" style="width:100%">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Staff Id</th>
+                <th>Staff Name</th>
+                <th>Type</th>
+                <th>Wh Name</th>
+                <th>Date</th>
+                <th>Salary</th>
+                <th>Hourly Rate</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            $('#findManpaower').click(function () {
+                var whName = $('#MCLT_FMWH').val();
+                var StaffId = $('#MCLT_NAME').val();
+                if (whName == "" || StaffId == "") {
+                    Swal.fire("error", "enter staff id and wh name", "error");
+                    return;
+                }
+                var urL = '/Expenses/ManPowerList/?MCLT_FMWH=' + whName + '&MCLT_TEXT=' + StaffId;
+                loadTable(urL);
+            });
+            function loadTable(urL) {
+                $.LoadingOverlay("show", {
+                    text: "Searching...",
+                    background: "rgba(0, 0, 0, 0.5)"
+                });
+                var table = $('#manpowerList').DataTable({
+                    "ajax": urL,
+                    "type": "GET",
+                    "datatype": "json",
+                    "bDestroy": true,
+                    "columns": [
+                         {
+                             "mData": "MCLT_TEXT",
+                             "render": function (mData) {
+                                 return '<div class="tn_data"><a href="/Expenses/ManPowerAction?MCLT_TEXT=' + mData + '" onclick="PartialView(this); return false;" class="btn btn-primary btn-xs">Action</a></div>';
+                             }
+                         },
+                        { "mData": "MCLT_NAME" },
+                        { "mData": "MCLT_DESC" },
+                        { "mData": "MCTP_NAME" },
+                        { "mData": "AMSP_NAME" },
+                         {
+                             "mData": "MCLT_YEAR", "render": function (mData) {
+                                 if (mData == null) return "";
+                                 return moment(mData).format('MM/DD/YYYY');
+                             }
+                         },
+                        { "mData": "MCLT_PRCE" },
+                        { "mData": "MCLT_COST" },
+                        {
+                            "mData": "ACT",
+                            render: function (mData) {
+                                if (mData == "1") {
+                                    return '<span class="label label-success label-mini">Active</span>'
+                                }
+                                else {
+                                    return '<span class="label label-warning label-mini">Inactive</span>'
+                                }
+                            }
+                        },
+                    ],
+                    "language": { "emptyTable": "no data found" }, "width": "100%"
+                });
+                $.LoadingOverlay("hide");
+            };
+        });
+    </script>
+}

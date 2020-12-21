@@ -1,0 +1,163 @@
+﻿@model auction.Models.R_EXPENSES
+@{
+    ViewBag.Title = "Expenses Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        expenses report
+    </div>
+    <div class="panel-body">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <span>From date</span>
+                        @Html.Editor("FROM_DATE", new { htmlAttributes = new { @class = "form-control input-sm default-date-picker", placeholder = "MM-DD-YYYY", required= "required", autocomplete = "off" } })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <span>To date</span>
+                        @Html.Editor("TO_DATE", new { htmlAttributes = new { @class = "form-control input-sm default-date-picker", placeholder = "MM-DD-YYYY", required = "required", autocomplete = "off" } })
+                        <small>Not more than 61 days</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <span>WH Name </span>
+                        @Html.DropDownList("ORDR_FMWH", null, "--select--", new { @class = "form-control input-sm select2", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <span>Unit Name</span>
+                        @Html.DropDownList("ORDR_TOWH", null, "--all--", new { @class = "form-control input-sm select2", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="checkbox" id="exl" name="exl">
+                        <label for="exl">Download Excel Only</label><br>
+                    </div>
+                </div>
+            </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input id="btnSumOnly" type="button" value="Summary" data-url="/Reports/R_Unit_EC_Summary" data-exl="/Reports/R_Unit_EC_Summary_Exl"  onclick="PartialView(this); return false;" class="btn btn-info btn-xs" />
+                    <input id="btnDSum" type="button" value="D Summary" data-url="/Reports/R_Unit_EC_D_Summary" data-exl="/Reports/R_Unit_EC_D_Summary_Exl" onclick="PartialView(this); return false;" class="btn btn-danger btn-xs" />
+                    <input id="btnSumEmail" type="button" value="All Unit Sum & Email" data-url="/Reports/R_Unit_EC_Summary_Email" onclick="PartialView(this); return false;" class="btn btn-primary btn-xs" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input id="btnPendingB" type="button" value="pf-Bill" data-url="/Reports/R_BILL_PENDING" data-otx="B" data-exl="/Reports/R_BILL_PENDING_Exl" onclick="PartialViewP(this); return false;" class="btn btn-primary btn-xs" />
+                    <input id="btnPendingR" type="button" value="pf-Rate" data-url="/Reports/R_BILL_PENDING" data-otx="R" data-exl="/Reports/R_BILL_PENDING_Exl"  onclick="PartialViewP(this); return false;" class="btn btn-primary btn-xs" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        expenses report
+        <div id="ORAM_ORMC_D"></div>
+        <p class="small pull-right">@System.DateTime.Now</p>
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        report viewer
+    </div>
+    <div class="panel-body">
+        <div id="rpt_view"></div>
+        <div id="rpt_viewD"></div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        function PartialView(e) {
+            var url = $(e).attr('data-url');
+            var exl = $(e).attr('data-exl');
+            var FROM_DATE = $('#FROM_DATE').val();
+            var TO_DATE = $('#TO_DATE').val();
+            var ORDR_FMWH = $('#ORDR_FMWH').val();
+            var ORDR_TOWH = $('#ORDR_TOWH').val();
+            if (FROM_DATE == "" || TO_DATE == "" || ORDR_FMWH == "")
+            {
+                Swal.fire("error", "enter all the data", "error");
+                return;
+            }
+
+            if ($("#exl").prop('checked') == true) {
+                var ulr = exl + "/?FROM_DATE=" + FROM_DATE + "&TO_DATE=" + TO_DATE + "&ORDR_FMWH=" + ORDR_FMWH + "&ORDR_TOWH=" + ORDR_TOWH;
+                $.ajax({
+                    url: ulr,
+                    type: 'GET',
+                    success: function (result) {
+                        if (result == "Success") {
+                            location.href = '/Reports/DownloadExcelFile';
+                        }
+                    }
+                });
+            }
+            else {
+                var ulr = url + "/?FROM_DATE=" + FROM_DATE + "&TO_DATE=" + TO_DATE + "&ORDR_FMWH=" + ORDR_FMWH + "&ORDR_TOWH=" + ORDR_TOWH;
+                $.LoadingOverlay("show", {
+                    text: "Searching...",
+                    background: "rgba(0, 0, 0, 0.5)"
+                });
+                $('#rpt_view').load(ulr);
+                $.LoadingOverlay("hide");
+            }
+        };
+        function PartialViewD(e) {
+            var url = $(e).attr('data-url');
+            $('.btn-color').removeClass("btn-warning");
+            $('#' + e.id).addClass("btn-warning");
+            $.LoadingOverlay("show", {
+                text: "Searching...",
+                background: "rgba(0, 0, 0, 0.5)"
+            });
+            $('#rpt_viewD').load(url);
+            $.LoadingOverlay("hide");
+        };
+
+        function PartialViewP(e) {
+            var url = $(e).attr('data-url');
+            var exl = $(e).attr('data-exl');
+            var otx = $(e).attr('data-otx');
+            var FROM_DATE = $('#FROM_DATE').val();
+            var TO_DATE = $('#TO_DATE').val();
+            var ORDR_FMWH = $('#ORDR_FMWH').val();
+            var ORDR_TOWH = $('#ORDR_TOWH').val();
+            if (FROM_DATE == "" || TO_DATE == "" || ORDR_FMWH == "") {
+                Swal.fire("error", "enter all the data", "error");
+                return;
+            }
+
+            if ($("#exl").prop('checked') == true) {
+                var ulr = exl + "/?FROM_DATE=" + FROM_DATE + "&TO_DATE=" + TO_DATE + "&ORDR_FMWH=" + ORDR_FMWH + "&ORDR_TOWH=" + ORDR_TOWH + "&OT=" + otx;
+                $.ajax({
+                    url: ulr,
+                    type: 'GET',
+                    success: function (result) {
+                        if (result == "Success") {
+                            location.href = '/Reports/DownloadExcelFile';
+                        }
+                    }
+                });
+            }
+            else {
+                var ulr = url + "/?FROM_DATE=" + FROM_DATE + "&TO_DATE=" + TO_DATE + "&ORDR_FMWH=" + ORDR_FMWH + "&ORDR_TOWH=" + ORDR_TOWH + "&OT=" + otx;
+                $.LoadingOverlay("show", {
+                    text: "Searching...",
+                    background: "rgba(0, 0, 0, 0.5)"
+                });
+                $('#rpt_view').load(ulr);
+                $.LoadingOverlay("hide");
+            }
+        };
+
+    </script>
+}

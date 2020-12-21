@@ -1,0 +1,291 @@
+﻿@{
+    ViewBag.Title = "Bill Rate Processing";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        bill rate processing
+        <div class="pull-right"><a class="btn btn-danger btn-xs" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">instructions</a></div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <span>From date</span>
+                    <input id="fromDate" class="form-control input-sm default-date-picker" placeholder="MM-DD-YYYY" autocomplete="off" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <span>To date</span>
+                    <input id="toDate" class="form-control input-sm default-date-picker" placeholder="MM-DD-YYYY" autocomplete="off" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <span>Bill Type</span>
+                    @Html.DropDownList("BILL_TYPE", null, "--select--", new { @class = "form-control input-sm select2", required = "required", onchange = "get_reset();" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <span>WH Name</span>
+                    @Html.DropDownList("ORDR_FMWH", null, new { @class = "form-control input-sm select2", required = "required" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <span>Unit Name</span>
+                    @Html.DropDownList("ORDR_TOWH", null, "--select--", new { @class = "form-control input-sm select2", required = "required", onchange = "get_OrdrList();" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <span>Order Number</span>
+                    @Html.DropDownList("ORDR_TEXT", Enumerable.Empty<SelectListItem>(), "--select--", new { @class = "form-control input-sm select2", required = "required", onchange = "get_BillData();" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <span>CO number</span>
+                    <input id="conumber" class="form-control input-sm" placeholder="enter CO number (full)" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <span>Actions</span>
+                    <a href="@Url.Action("RateProcessing", "BillProcess")" class="btn btn-primary btn-sm btn-block"><i class="fa fa-times"></i> Cancel</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <button type="button" class="btn btn-danger btn-sm btn-block" onclick="processRateECR();"><i class="fa fa-cogs"></i> Exp Con-R</button>
+            </div>
+            <div class="col-md-4">
+                <button type="button" class="btn btn-info btn-sm btn-block" onclick="processRateECIQR();"><i class="fa fa-cogs"></i> Exp-R, Con-IQR</button>
+            </div>
+            <div class="col-md-4">
+                <button type="button" class="btn btn-warning btn-sm btn-block" onclick="processRateER();"><i class="fa fa-cogs"></i> Exp-R</button>
+            </div>
+        </div>
+        <div class="row panel mt">
+            <div class="table-responsive">
+                <table id="expensList" class="table table-border table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Expenses</th>
+                            <th>Qty</th>
+                            <th>Rate</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row panel mt">
+            <div class="table-responsive">
+                <table id="addscmItem" class="table table-border table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Name</th>
+                            <th>UOM</th>
+                            <th>Qty</th>
+                            <th>Rate</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        bill rate processing
+        <p class="small pull-right">@System.DateTime.Now</p>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="col-md-12">
+            <div class="collapse multi-collapse" id="multiCollapseExample1">
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h3><span class="fa fa-cogs"></span> Exp Con-R</h3>
+                            <p>You must add consumption items in to bill before proceeding.</p>
+                            <p><strong>With CO number:</strong> Rate applied on Expenses items, Consumption items rate are pulled from CO number.</p>
+                            <p><strong>Without CO number:</strong> Rate applied on Expenses items, Consumptions items rate(max) are pulled from last 2 month CO numbers. CO number not show in reports as a references</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3><span class="fa fa-cogs"></span> Exp-R, Con-IQR</h3>
+                            <p>No need to add consumption items in to bill before proceeding.</p>
+                            <p><strong>With CO number:</strong> Rate applied on Expenses items, Consumption items code, qty, rate are pulled from CO number.</p>
+                            <p><strong>Note:</strong> Consumption items may not show after proccessing, if you not added them earlier. To fix the problem, Go Setup > Consumption Item > <strong>Add Item</strong> manually or <strong>Auto Add Missing Items</strong></p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3><span class="fa fa-cogs"></span> Exp-R</h3>
+                            <p>No need to add consumption items in to bill before proceeding.</p>
+                            <p><strong>Without CO number:</strong> Rate applied on Expenses items, Consumption items rate aren't applied or ignored.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+
+    <script>
+        function get_OrdrList() {
+            var url = 'DropDownFor_BillProces';
+            var fromdt = $('#fromDate').val();
+            var todt = $('#toDate').val();
+            var BILL_TYPE = $('#BILL_TYPE').val();
+            var ORDR_FMWH = $('#ORDR_FMWH').val();
+            var ORDR_TOWH = $('#ORDR_TOWH').val();
+            var ORDR_TEXT = $('#ORDR_TEXT');
+            if (fromdt == "" || todt == "" || BILL_TYPE == "" || ORDR_FMWH == "" || ORDR_TOWH == "") {
+                Swal.fire("error", "enter all the data", "error");
+                return;
+            }
+            ORDR_TEXT.empty();
+            ORDR_TEXT.append($("<option></option>").attr("value", '').text('--Select--'));
+            $.LoadingOverlay("show", {
+                text: "Searching...",
+                background: "rgba(0, 0, 0, 0.5)"
+            });
+            $.getJSON(url, { ORDR_FMWH: ORDR_FMWH, ORDR_TOWH: ORDR_TOWH, fromDate: fromdt, toDate: todt, BILL_TYPE: BILL_TYPE }, function (response) {
+                $.each(response, function (index, item) {
+                    ORDR_TEXT.append($("<option></option>").attr("value", item.Value).text(item.Text));
+                });
+            });
+            $.LoadingOverlay("hide");
+        };
+
+        function get_BillData() {
+            var ORDR_VAL = $('#ORDR_TEXT').val();
+            if (ORDR_VAL == "") {
+                Swal.fire("error", "select order number", "error");
+                return;
+            }
+            $.LoadingOverlay("show", {
+                text: "Searching...",
+                background: "rgba(0, 0, 0, 0.5)"
+            });
+            var urLm = '/BillProcess/OrderBillM/?ORDR_VAL=' + ORDR_VAL;
+            loadTableM(urLm);
+            var urLi = '/BillProcess/OrderBillI/?ORDR_VAL=' + ORDR_VAL;
+            loadTableI(urLi);
+            $.LoadingOverlay("hide");
+        };
+
+        function loadTableM(urLm) {
+            var table = $('#expensList').DataTable({
+                "ajax": urLm,
+                "type": "GET",
+                "datatype": "json",
+                "bDestroy": true,
+                "autoWidth": false,
+                "columns": [
+                    { "mData": "MCLT_NAME" },
+                    { "mData": "ORMC_HOUR" },
+                    { "mData": "ORMC_COST" },
+                    { "mData": "ORMC_DESC" }
+
+                ],
+                "language": { "emptyTable": "no data found" }, "width": "100%"
+            });
+        };
+
+        function loadTableI(urLm) {
+            var table = $('#addscmItem').DataTable({
+                "ajax": urLm,
+                "type": "GET",
+                "datatype": "json",
+                "bDestroy": true,
+                "autoWidth": false,
+                "columns": [
+                    { "mData": "AMIM_TEXT" },
+                    { "mData": "AMIM_NAME" },
+                    { "mData": "AMSU_NAME" },
+                    { "mData": "ORAM_QTY" },
+                    { "mData": "ORAM_RATE" },
+                    { "mData": "ORAM_DESC" }
+                ],
+                "language": { "emptyTable": "no data found" }, "width": "100%"
+            });
+        };
+
+        function get_reset() {
+            var ORDR_TEXT = $('#ORDR_TEXT');
+            ORDR_TEXT.empty();
+            ORDR_TEXT.append($("<option></option>").attr("value", '').text('--Select--'));
+        }
+
+        function processRateECR() {
+            var ORDR_TEXT = $('#ORDR_TEXT').val();
+            var CO_TEXT = $('#conumber').val();
+            if (ORDR_TEXT == "") {
+                Swal.fire("error", "enter order", "error");
+                return;
+            }
+            var url = "/BillProcess/StartProcess";
+            $.LoadingOverlay("show", {
+                text: "Executing...",
+                background: "rgba(0, 0, 0, 0.5)"
+            });
+            $.getJSON(url, { ORDR_TEXT: ORDR_TEXT, CO_TEXT: CO_TEXT, CT: "ECR" }, function (response) {
+                Swal.fire("Information", response.messages, "info");
+                get_BillData();
+                $('#ORDR_TEXT :selected').remove();
+            });
+            $.LoadingOverlay("hide");
+        };
+        function processRateECIQR() {
+            var ORDR_TEXT = $('#ORDR_TEXT').val();
+            var CO_TEXT = $('#conumber').val();
+            if (ORDR_TEXT == "" || CO_TEXT == "") {
+                Swal.fire("error", "enter order/CO number", "error");
+                return;
+            }
+            var url = "/BillProcess/StartProcess";
+
+            $.LoadingOverlay("show", {
+                text: "Executing...",
+                background: "rgba(0, 0, 0, 0.5)"
+            });
+            $.getJSON(url, { ORDR_TEXT: ORDR_TEXT, CO_TEXT: CO_TEXT, CT: "ECIQR" }, function (response) {
+                Swal.fire("Information", response.messages, "info");
+                get_BillData();
+                $('#ORDR_TEXT :selected').remove();
+            });
+            $.LoadingOverlay("hide");
+        };
+        function processRateER() {
+            var ORDR_TEXT = $('#ORDR_TEXT').val();
+            var CO_TEXT = $('#conumber').val();
+            if (ORDR_TEXT == "") {
+                Swal.fire("error", "enter order number", "error");
+                return;
+            }
+            $.LoadingOverlay("show", {
+                text: "Executing...",
+                background: "rgba(0, 0, 0, 0.5)"
+            });
+            var url = "/BillProcess/StartProcess";
+            $.getJSON(url, { ORDR_TEXT: ORDR_TEXT, CO_TEXT: CO_TEXT, CT: "ER" }, function (response) {
+                Swal.fire("Information", response.messages, "info");
+                get_BillData();
+                $('#ORDR_TEXT :selected').remove();
+            });
+            $.LoadingOverlay("hide");
+        };
+    </script>
+
+}

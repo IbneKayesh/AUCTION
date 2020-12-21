@@ -1,0 +1,101 @@
+﻿@model IEnumerable<auction.Models.AGENTS>
+
+@{
+    ViewBag.Title = "New Agents";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.AGENT_ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AGENT_PROPRIETOR_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AGENT_NAME)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AGENT_CONTACT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AGENT_WEBSITE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.REGISTRATION_NUMBER)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AGENT_MEMBER)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CONTACT_PERSON)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CONTACT_PERSON_CONTACT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EMAIL_ADDRESS)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AGENT_ADDRESS)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AGENT_CAPACITY)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EMAIL_NOTIFICATIONS)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AGENT_STATUS)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.AGENT_ID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AGENT_PROPRIETOR_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AGENT_NAME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AGENT_CONTACT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AGENT_WEBSITE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.REGISTRATION_NUMBER)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AGENT_MEMBER)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CONTACT_PERSON)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CONTACT_PERSON_CONTACT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EMAIL_ADDRESS)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AGENT_ADDRESS)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AGENT_CAPACITY)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EMAIL_NOTIFICATIONS)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AGENT_STATUS)
+        </td>
+    </tr>
+}
+
+</table>
